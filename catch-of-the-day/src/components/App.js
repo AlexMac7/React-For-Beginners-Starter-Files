@@ -19,9 +19,21 @@ class App extends React.Component {
         // third: set new fishes object to state
         this.setState({ fishes: fishes, });
     };
+
     loadSampleFishes = () => {
         this.setState({ fishes: sampleFishes });
     };
+
+    addToOrder = key => {
+        //take a copy of state
+        const order = {...this.state.order};
+        // add item to order or update number if already in order
+        // if fish is preset we add one to it, otherwise just add 1
+        order[key] = order[key] + 1 || 1;
+        // update state object
+        this.setState({ order });
+    };
+
     render() {
         return (
             <div className={"catch-of-the-day"}>
@@ -29,7 +41,14 @@ class App extends React.Component {
                     <Header tagline={'Fresh Seafood Market'} />
                     <ul className={'fishes'}>
                         {/*React wants a unique key for each element / object so it can quickly find them.  Now for each fish object in state we render out a fish component passing props to it */}
-                        {Object.keys(this.state.fishes).map(key => <Fish key={key} details={this.state.fishes[key]} />)}
+                        {Object.keys(this.state.fishes).map(key => (
+                            <Fish
+                                key={key}
+                                index={key}
+                                details={this.state.fishes[key]}
+                                addToOrder={this.addToOrder}
+                            />
+                        ))}
                     </ul>
                 </div>
                 <Order />
