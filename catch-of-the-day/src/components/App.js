@@ -13,7 +13,7 @@ class App extends React.Component {
     };
     componentDidMount() {
         const { params } = this.props.match;
-        // first reinstate our localStorage
+        // first reinstate our localStorage, because on page refresh the component mounts and updates state which triggers component did update. By reinstating local storage before that we keep our currently stored items
         const localStorageRef = localStorage.getItem(params.storeId);
         if (localStorageRef) {
             this.setState({ order: JSON.parse(localStorageRef) });
@@ -43,6 +43,14 @@ class App extends React.Component {
         this.setState({ fishes: fishes, });
     };
 
+    updateFish = (key, updatedFish) => {
+        //take a copy of current state
+        const fishes = { ...this.state.fishes };
+        //update that state
+        fishes[key] = updatedFish;
+        //set that to state
+        this.setState({ fishes });
+    }
     loadSampleFishes = () => {
         this.setState({ fishes: sampleFishes });
     };
@@ -80,7 +88,9 @@ class App extends React.Component {
                 />
                 <Inventory
                     addFish={this.addFish}
+                    updateFish={this.updateFish}
                     loadSampleFishes={this.loadSampleFishes}
+                    fishes={this.state.fishes}
                 />
             </div>
         );
